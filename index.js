@@ -242,7 +242,7 @@ VALUES (?,?,?,?,?)`,[answer.inputId, answer.inputFirstName, answer.inputLastName
           })
 };
 
-// Update an employee's Role
+// Update an employee's Role or Manager ID
 function updateEmployee() {
     inquirer
         .prompt([
@@ -251,21 +251,36 @@ function updateEmployee() {
                 message: "Enter Employee ID to update:",
                 name: "updateId"
             },
+            { 
+                type: "list",
+                message: "Enter which area of employee to update",
+                choices: ["Role ID", "Manager ID"],
+                name: "updateInfo"
+            },
             {
                 type: "number",
-                message: "Enter new Role ID",
-                name: "updateRole"
+                message: "Enter new ID",
+                name: "updateInfoId"
             }
         ])
-        .then(function(answer) {
-            db.query(`UPDATE employee SET e_role_id = ${answer.updateRole} WHERE ${answer.updateId} = e_role_id`, (err,res) => {
-           if (err) {
-               console.log('Error in updating employee role.');
-               return;
-            }
+        .then(function (answer) {
+            switch (answer.updateInfo)
+             {             
+                case "Role ID":
+                    var empQuery = `UPDATE employee SET e_role_id = ${answer.updateInfoId} WHERE ${answer.updateId} = e_id`;
+                    break;
+                case "Manager ID":
+                    var empQuery = `UPDATE employee SET e_manager_id = ${answer.updateInfoId} WHERE ${answer.updateId} = e_id`;
+                    break;
+             }
+            db.query(empQuery, (err, res) => {
+                if (err) {
+                    console.log('Error in updating employee role.');
+                    return;
+                }
+                })
            getAllEmployees()
-          })
-          })
+            } )
 };
 
 // Delete an Employee based on their id

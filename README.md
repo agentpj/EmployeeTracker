@@ -16,7 +16,11 @@ View employees under a specific department id, *bonus*
 Add an employee,
 Add a department,
 Add a role,
-Update and employee's role.
+Update an employee's role or manager id, *bonus*
+Delete a department *bonus*
+Delete a role *bonus*
+Delete an employee *bonus*
+
 
 This project includes a database schema.sql file for the employee.dbn data with 3 tables (employee, role and department).
 
@@ -37,4 +41,4 @@ https://github.com/agentpj/EmployeeTracker
 Screencastify link:
 
 Project Screenshot:
-[The webpage includes reporting functionality.](./db/EmployeeTracker.jpg)
+[The webpage is a basic Employee Tracking application.](./db/EmployeeTracker.jpg)
