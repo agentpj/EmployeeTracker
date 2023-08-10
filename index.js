@@ -9,21 +9,22 @@ const db = mysql.createConnection({
     database: "employee_db"
 },
     console.log(`Connected to the employee_db database.`)
-    , getAction()
 );
+
+console.log('Welcome to the Employee Tracking Database for XYZ Manufacturing Company');
 
 function getAction() {
     inquirer
-        .prompt([
+        .prompt(
             {
                 type: "list",
                 message: "What would you like to do? ",
-                name: "actionAnswer",
                 choices: ["View all Employees", "View all Departments", "View all Roles",
-                    "Add new Employee", "Add new Department", "Add new Role",
-                    "Exit",]
+                    "Add new Employee", "Add new Department", "Add new Role", "Update an Employee",
+                    "Exit"],
+                name: "actionAnswer"
             }
-        ])
+        )
         .then(({ actionAnswer }) => {
             console.log({ actionAnswer });
             switch (actionAnswer) {
@@ -45,6 +46,9 @@ function getAction() {
                 case 'Add new Role':
                     addNewRole();
                     break;
+                case 'Update an Employee':
+                    updateEmployee();
+                    break;
                 case 'Exit':
                     exitAction();
                     break;
@@ -53,9 +57,8 @@ function getAction() {
         .catch((err) => {
             console.log(err);
             console.log('Oops. Something went wrong.');
-        })
+        });
 };
-
 
 // Read all employee
 function getAllEmployees() {
@@ -119,7 +122,7 @@ function addNewEmployee() {
     inquirer
         .prompt([
             {
-                type: "input",
+                type: "number",
                 message: "Employee ID: ",
                 name: "inputId"
             },
@@ -134,56 +137,79 @@ function addNewEmployee() {
                 name: "inputLastName"
             },
             {
-                type: "input",
+                type: "number",
                 message: "Employee's Role ID: ",
                 name: "inputRoleId"
             },
             {
-                type: "input",
+                type: "number",
                 message: "Employee's Manager ID ",
                 name: "inputManagerID"
             }
         ])
-        .then(() => {
+        .then(function(answer) {
             db.query(`INSERT INTO employee (e_id, e_first_name, e_last_name, e_role_id, e_manager_id)
-VALUES (?,?,?,?,?),({inputId}, {inputFirstName}, {inputLastName}, {inputRoleId}, {inputManagerID});`, (err,res) => {
+VALUES (?,?,?,?,?)`,[answer.inputId, answer.inputFirstName, answer.inputLastName, answer.inputRoleId, answer.inputManagerID], (err,res) => {
            if (err) {
-               console.log({inputId},{inputFirstName});
+               console.log(answer);
                return;
-            }})
+            }
+          getAllEmployees()
+          })
           })
 };
 
-
+function updateEmployee() {
+    inquirer
+        .prompt([
+            {
+                type: "number",
+                message: "Enter Employee ID to update:",
+                name: "updateId"
+            },
+            {
+                type: "number",
+                message: "Enter new Role ID",
+                name: "updateRole"
+            }
+        ])
+        .then(function(answer) {
+            db.query(`UPDATE employee SET e_role_id = ${answer.updateRole} WHERE ${answer.updateId} = e_role_id`, (err,res) => {
+           if (err) {
+               console.log(answer);
+               return;
+            }
+           getAllEmployees()
+          })
+          })
+};
 
 function addNewDepartment() {
     inquirer
         .prompt([
+            {
+                type: "number",
+                message: "New Department ID: ",
+                name: "inputDepartmentId"
+            },
             {
                 type: "input",
                 message: "New Department Name: ",
                 name: "inputDepartmentName"
             }
         ])
-        .then(addDepartment())
-        .catch((err) => {
-            console.log(err);
-            console.log('Oops. Something went wrong.');
-        })
+        .then(function(answer) {
+            db.query(`INSERT INTO department (d_id, d_name)
+            VALUES(?,?)`, [answer.inputDepartmentId, answer.inputDepartmentName], (err,res) => {
+           if (err) {
+               console.log(answer);
+               return;
+            }
+           getAllDepartments()
+          })
+          })
 };
 
-function addDepartment() {
-    const sql = `INSERT INTO department (d_id, d_name)
-    VALUES (inputDepartmentName);`
-
-    db.query(sql, (err, res) => {
-        if (err) {
-            return;
-        }
-        console.log("Department added")
-        getAction()
-    })
-};
 
 function addNewRole() {
     inquirer
@@ -194,38 +220,33 @@ function addNewRole() {
                 name: "inputRoleTitle"
             },
             {
-                type: "input",
+                type: "number",
                 message: "Enter Salary: ",
                 name: "inputRoleSalary"
             },
             {
-                type: "input",
+                type: "number",
                 message: "Enter Department Id ",
                 name: "inputRoleDepartmentID"
             }
         ])
-        .then(addRole())
-        .catch((err) => {
-            console.log(err);
-            console.log('Oops. Something went wrong.');
+        .then(function(answer) {
+            db.query(`INSERT INTO role (r_id, r_title, r_salary, r_department_id)
+            VALUES(?,?,?,?)`, [answer.inputRoleTitle, answer.inputRoleSalary, answer.inputRoleDepartmentID], (err,res) => {
+           if (err) {
+               console.log(answer);
+               return;
+            }
+        getAllRoles()
         })
+          })
 };
 
-function addRole() {
-    const sql = `INSERT INTO role (r_id, r_title, r_salary, r_department_id)
-    VALUES (inputRoleTitle,inputRoleSalary,inutRoleDepartmentID);`
-
-    db.query(sql, (err, res) => {
-        if (err) {
-            return;
-        }
-        console.log("Role added")
-        getAction()
-    })
-};
 
 function exitAction() {
     db.end()
     console.log(`No longer connected to the employee_db database.`)
     process.exit();
 }
+
+getAction();
