@@ -35,4 +35,6 @@ INSERT INTO department (d_id, d_name)
 
 // add employee allow selection of role_id and manager_id
 INSERT INTO employee (e_id, e_first_name, e_last_name, e_role_id, e_manager_id)
-  VALUES (5023, "Hulk", "Mom", 180, 1023);
+  VALUES (8823, "Hulk", "Mom", 900, 1023);
+
+  DELETE FROM employee WHERE e_id =  8823;
