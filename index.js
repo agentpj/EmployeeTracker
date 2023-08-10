@@ -227,12 +227,12 @@ function addNewEmployee() {
             {
                 type: "number",
                 message: "Employee's Manager ID ",
-                name: "inputManagerID"
+                name: "inputManagerId"
             }
         ])
         .then(function(answer) {
             db.query(`INSERT INTO employee (e_id, e_first_name, e_last_name, e_role_id, e_manager_id)
-VALUES (?,?,?,?,?)`,[answer.inputId, answer.inputFirstName, answer.inputLastName, answer.inputRoleId, answer.inputManagerID], (err,res) => {
+VALUES (?,?,?,?,?)`,[answer.inputId, answer.inputFirstName, answer.inputLastName, answer.inputRoleId, answer.inputManagerId], (err,res) => {
            if (err) {
                console.log('Error in adding new employee.');
                return;
@@ -357,6 +357,11 @@ function addNewRole() {
     inquirer
         .prompt([
             {
+                type: "number",
+                message: "Enter Role ID",
+                name: "inputRoleId"
+            },
+            {
                 type: "input",
                 message: "Enter Role Title: ",
                 name: "inputRoleTitle"
@@ -374,7 +379,7 @@ function addNewRole() {
         ])
         .then(function(answer) {
             db.query(`INSERT INTO role (r_id, r_title, r_salary, r_department_id)
-            VALUES(?,?,?,?)`, [answer.inputRoleTitle, answer.inputRoleSalary, answer.inputRoleDepartmentID], (err,res) => {
+            VALUES(?,?,?,?)`, [answer.inputRoleId, answer.inputRoleTitle, answer.inputRoleSalary, answer.inputRoleDepartmentID], (err,res) => {
            if (err) {
                console.log('Error in adding new role ');
                return;

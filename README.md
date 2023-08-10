@@ -39,6 +39,8 @@ Github repo:
 https://github.com/agentpj/EmployeeTracker
 
 Screencastify link:
+https://drive.google.com/file/d/1F9Kgo25hl5jmc-0_nSmqxAAQWuQidNA4/view
+
 
 Project Screenshot:
 [The webpage is a basic Employee Tracking application.](./db/EmployeeTracker.jpg)
