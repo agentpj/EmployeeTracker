@@ -154,6 +154,7 @@ function getEmployeesByDepartment() {
     })
 };
 
+
 // Read all departments
 function getAllDepartments() {
     const sql = `SELECT * FROM department`;
