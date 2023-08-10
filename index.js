@@ -20,9 +20,9 @@ function getAction() {
                 type: "list",
                 message: "What would you like to do? ",
                 choices: ["View all Employees", "View Employees by Manager", "View Employees by Department",
-                "View all Departments", 
-                "View All Roles", "Add new Employee", "Add new Department", "Add new Role",
-                "Update an Employee", "Exit"],
+                "View all Departments", "View all Roles", "Add new Employee", "Add new Department", "Add new Role",
+                "Update an Employee", "Delete an Employee", "Delete a Department", "Delete a Role",
+                "Exit"],
                 name: "actionAnswer"
             }
         )
@@ -56,14 +56,25 @@ function getAction() {
                 case 'Update an Employee':
                     updateEmployee();
                     break;
+                case 'Delete an Employee':
+                    deleteEmployee();
+                    break;
+                case 'Delete a Department':
+                    deleteDepartment();
+                    break;
+                case 'Delete a Role':
+                    deleteRole();
+                    break;
                 case 'Exit':
                     exitAction();
                     break;
+                default:
+                    getAction();
             }
         })
         .catch((err) => {
             console.log(err);
-            console.log('Oops. Something went wrong.');
+            console.log('Error in actions.');
         });
 };
 
@@ -176,7 +187,7 @@ function getAllRoles() {
    role.r_title AS title,
    department.d_name AS department,
    role.r_salary AS salary
-   FROM ROLE
+   FROM role
    LEFT JOIN department ON department.d_id = role.r_department_id
    ORDER BY department.d_id;`;
 
@@ -223,7 +234,7 @@ function addNewEmployee() {
             db.query(`INSERT INTO employee (e_id, e_first_name, e_last_name, e_role_id, e_manager_id)
 VALUES (?,?,?,?,?)`,[answer.inputId, answer.inputFirstName, answer.inputLastName, answer.inputRoleId, answer.inputManagerID], (err,res) => {
            if (err) {
-               console.log(answer);
+               console.log('Error in adding new employee.');
                return;
             }
           getAllEmployees()
@@ -249,7 +260,28 @@ function updateEmployee() {
         .then(function(answer) {
             db.query(`UPDATE employee SET e_role_id = ${answer.updateRole} WHERE ${answer.updateId} = e_role_id`, (err,res) => {
            if (err) {
-               console.log(answer);
+               console.log('Error in updating employee role.');
+               return;
+            }
+           getAllEmployees()
+          })
+          })
+};
+
+// Delete an Employee based on their id
+function deleteEmployee() {
+    inquirer
+        .prompt([
+            {
+                type: "number",
+                message: "Enter Employee ID to delete:",
+                name: "deleteId"
+            }
+        ])
+        .then(function(answer) {
+            db.query(`DELETE FROM employee WHERE ${answer.deleteId} = e_id`, (err,res) => {
+           if (err) {
+               console.log('Error in deleting employee');
                return;
             }
            getAllEmployees()
@@ -276,7 +308,28 @@ function addNewDepartment() {
             db.query(`INSERT INTO department (d_id, d_name)
             VALUES(?,?)`, [answer.inputDepartmentId, answer.inputDepartmentName], (err,res) => {
            if (err) {
-               console.log(answer);
+               console.log('Error in adding new department.');
+               return;
+            }
+           getAllDepartments()
+          })
+          })
+};
+
+// Delete a Department from department id
+function deleteDepartment() {
+    inquirer
+        .prompt([
+            {
+                type: "number",
+                message: "Enter Department ID to delete:",
+                name: "deletedeptId"
+            }
+        ])
+        .then(function(answer) {
+            db.query(`DELETE FROM department WHERE ${answer.deletedeptId} = d_id`, (err,res) => {
+           if (err) {
+               console.log('Error in deleting department');
                return;
             }
            getAllDepartments()
@@ -308,7 +361,7 @@ function addNewRole() {
             db.query(`INSERT INTO role (r_id, r_title, r_salary, r_department_id)
             VALUES(?,?,?,?)`, [answer.inputRoleTitle, answer.inputRoleSalary, answer.inputRoleDepartmentID], (err,res) => {
            if (err) {
-               console.log(answer);
+               console.log('Error in adding new role ');
                return;
             }
         getAllRoles()
@@ -316,6 +369,26 @@ function addNewRole() {
           })
 };
 
+// Delete Roles from role id
+function deleteRole() {
+    inquirer
+        .prompt([
+            {
+                type: "number",
+                message: "Enter Role ID to delete:",
+                name: "deleteRoleId"
+            }
+        ])
+        .then(function(answer) {
+            db.query(`DELETE FROM role WHERE ${answer.deleteRoleId} = r_id`, (err,res) => {
+           if (err) {
+               console.log('Error in deleting role');
+               return;
+            }
+           getAllRoles()
+          })
+          })
+};
 
 function exitAction() {
     db.end()

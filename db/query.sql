@@ -24,7 +24,6 @@ FROM employee
 LEFT JOIN role on role.r_id = employee.e_role_id 
 LEFT JOIN department on department.d_id = role.r_department_id;
 
-
 // add roles must allow selection of department_id
 INSERT INTO role (r_id, r_title, r_salary, r_department_id)
   VALUES (122, "Intern", 1000, 300);
