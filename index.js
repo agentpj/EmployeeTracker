@@ -19,9 +19,10 @@ function getAction() {
             {
                 type: "list",
                 message: "What would you like to do? ",
-                choices: ["View all Employees", "View all Departments", "View all Roles",
-                    "Add new Employee", "Add new Department", "Add new Role", "Update an Employee",
-                    "Exit"],
+                choices: ["View all Employees", "View Employees by Manager", "View Employees by Department",
+                "View all Departments", 
+                "View All Roles", "Add new Employee", "Add new Department", "Add new Role",
+                "Update an Employee", "Exit"],
                 name: "actionAnswer"
             }
         )
@@ -30,6 +31,12 @@ function getAction() {
             switch (actionAnswer) {
                 case 'View all Employees':
                     getAllEmployees();
+                    break;
+                case 'View Employees by Manager':
+                    getEmployeesByManager();
+                    break;
+                case 'View Employees by Department':
+                    getEmployeesByDepartment();
                     break;
                 case 'View all Departments':
                     getAllDepartments();
@@ -83,7 +90,71 @@ function getAllEmployees() {
     )
 };
 
-// Read all departments{
+// Get all employees under a specific Manager
+function getEmployeesByManager() {
+    inquirer
+        .prompt([
+            {
+                type: "number",
+                message: "Enter Manager Number to report Employees under:",
+                name: "managerInputId"
+            }
+        ])
+        .then(function(answer) {
+    db.query(`SELECT employee.e_id AS id,
+    employee.e_first_name AS first_name,
+    employee.e_last_name AS last_name,
+    role.r_title AS title,
+    department.d_name AS department,
+    role.r_salary AS salary,
+    employee.e_manager_id AS manager
+    FROM employee
+    LEFT JOIN role on role.r_id = employee.e_role_id 
+    LEFT JOIN department on department.d_id = role.r_department_id
+    WHERE ${answer.managerInputId} = employee.e_manager_id`, (err, rows) => {
+        if (err) {
+            return;
+        }
+        console.table(rows)
+        getAction()
+       }
+    )
+    })
+};
+
+// Get employees by specific Department
+function getEmployeesByDepartment() {
+    inquirer
+        .prompt([
+            {
+                type: "number",
+                message: "Enter Department Number to report Employees under:",
+                name: "departmentInputId"
+            }
+        ])
+        .then(function(answer) {
+    db.query(`SELECT employee.e_id AS id,
+    employee.e_first_name AS first_name,
+    employee.e_last_name AS last_name,
+    role.r_title AS title,
+    department.d_name AS department,
+    role.r_salary AS salary,
+    employee.e_manager_id AS manager
+    FROM employee
+    LEFT JOIN role on role.r_id = employee.e_role_id 
+    LEFT JOIN department on department.d_id = role.r_department_id
+    WHERE ${answer.departmentInputId} = department.d_id`, (err, rows) => {
+        if (err) {
+            return;
+        }
+        console.table(rows)
+        getAction()
+       }
+    )
+    })
+};
+
+// Read all departments
 function getAllDepartments() {
     const sql = `SELECT * FROM department`;
 
@@ -117,8 +188,8 @@ function getAllRoles() {
     })
 };
 
+//Add a new Employee
 function addNewEmployee() {
-    console.log("addnewemployee")
     inquirer
         .prompt([
             {
@@ -159,6 +230,7 @@ VALUES (?,?,?,?,?)`,[answer.inputId, answer.inputFirstName, answer.inputLastName
           })
 };
 
+// Update an employee's Role
 function updateEmployee() {
     inquirer
         .prompt([
@@ -184,6 +256,7 @@ function updateEmployee() {
           })
 };
 
+// Add a Department
 function addNewDepartment() {
     inquirer
         .prompt([
@@ -210,7 +283,7 @@ function addNewDepartment() {
           })
 };
 
-
+// Add a Role
 function addNewRole() {
     inquirer
         .prompt([
