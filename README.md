@@ -3,7 +3,7 @@ Challenge 12 - Employee Tracker using MySql2, NodeJS
 
 This project includes NodeJS, Inquirer, and MySql2.
 
-This project allows a business owner to vie and manage the departments, roles and employee information
+This project allows a business owner to view and manage the departments, roles and employee information
 in a company in order to organize and plan a business.
 
 The user reports and organizes their business through the command line inputs.
