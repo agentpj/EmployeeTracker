@@ -7,7 +7,7 @@ This project allows a business owner to view and manage the departments, roles a
 in a company in order to organize and plan a business.
 
 The user reports and organizes their business through the command line inputs.
-The user get a menu of chices when the application is launched such as:
+The user gets a menu of choices when the application is launched such as:
 View all employees (employee id, employee first and last name, job title, department, salary and manager id),
 View all roles (by job title, role id, department the role corresponds to, and salary for that role)
 View all departments (department name and id),
